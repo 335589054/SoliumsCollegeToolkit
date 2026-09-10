@@ -616,7 +616,7 @@ UniToolKit/
         │   ├── mipmap-anydpi/         # 自适应与旧版应用图标
         │   ├── xml/                   # 小组件配置
         │   └── layout/                # 小组件布局
-        └── java/com/unitoolkit/
+        └── java/com/solium/Unitoolkit/
             ├── MainActivity.kt        # 入口 Activity
             ├── UniToolkitApp.kt       # Application（DB + Settings 初始化）
             │

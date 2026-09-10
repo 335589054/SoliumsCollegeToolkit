@@ -93,7 +93,7 @@ UniToolKit/
     └── src/main/
         ├── AndroidManifest.xml
         ├── res/             # 图标 / 小组件 / 主题资源
-        └── java/com/unitoolkit/
+        └── java/com/solium/Unitoolkit/
             ├── MainActivity.kt / UniToolkitApp.kt
             ├── core/        # 主题 / Room / DataStore / 模型 / 工具
             ├── ui/          # 各模块 Screen + ViewModel + 导航

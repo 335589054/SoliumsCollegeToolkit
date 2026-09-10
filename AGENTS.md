@@ -6,12 +6,12 @@
 - 每次完成项目代码修改后，**必须同步更新**以下内容：
   1. `DEV-DOC.md`：更新版本号、功能说明、UI/UX、目录结构等受影响章节；
   2. `CHANGELOG.md`：追加当前版本的更新记录；
-  3. 应用内“更新日志”页面（`app/src/main/java/com/unitoolkit/ui/settings/ChangelogScreen.kt`）中的对应版本内容。
+  3. 应用内“更新日志”页面（`app/src/main/java/com/solium/Unitoolkit/ui/settings/ChangelogScreen.kt`）中的对应版本内容。
 - 涉及 UI 文案、桌面小组件、图标资源等修改时，同时核对 `strings.xml`、`AndroidManifest.xml` 与对应布局/资源文件。
 - 文档与代码同步完成，禁止只改代码不更新文档。
 - **每次变更版本号时**，必须同步更新以下位置的版本信息，避免不一致：
   1. `app/build.gradle.kts` 的 `versionName`（与 `versionCode` 递增）；
-  2. 设置页「关于」对话框（`app/src/main/java/com/unitoolkit/ui/settings/SettingsScreen.kt`）中的版本文案；
+  2. 设置页「关于」对话框（`app/src/main/java/com/solium/Unitoolkit/ui/settings/SettingsScreen.kt`）中的版本文案；
   3. `DEV-DOC.md` 与 `CHANGELOG.md` 的当前版本。
 
 ## 构建环境
