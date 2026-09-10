@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Solium的工具箱</string>
+    <string name="next_course_widget_label">下一节课</string>
+    <string name="next_course_widget_desc">显示下一节课的开始时间与地点</string>
+    <string name="quick_entry_widget_label">快捷入口</string>
+    <string name="quick_entry_widget_desc">以图标显示在设置中勾选的快捷入口</string>
+</resources>
