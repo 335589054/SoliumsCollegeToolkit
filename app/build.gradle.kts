@@ -1,4 +1,4 @@
-﻿plugins {
+plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
@@ -7,7 +7,7 @@
 }
 
 android {
-    namespace = "com.unitoolkit"
+    namespace = "com.solium.Unitoolkit"
     compileSdk = 35
 
     signingConfigs {
@@ -20,11 +20,11 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.unitoolkit"
+        applicationId = "com.solium.Unitoolkit"
         minSdk = 24
         targetSdk = 35
-        versionCode = 6
-        versionName = "1.0.3-bugfix1"
+        versionCode = 14
+        versionName = "1.1.0"
         vectorDrawables { useSupportLibrary = true }
     }
 

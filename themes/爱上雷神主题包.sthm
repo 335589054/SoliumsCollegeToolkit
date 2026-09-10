@@ -1,0 +1,69 @@
+{
+  "format": "unitoolkit-theme",
+  "version": 1,
+  "themes": [
+    {
+      "id": "thor_vivid",
+      "name": "鲜艳黄紫",
+      "colors": {
+        "primary": {"lightHex": "#A855F7", "darkHex": "#C084FC"},
+        "onPrimary": {"lightHex": "#FFFFFF", "darkHex": "#3B0764"},
+        "primaryContainer": {"lightHex": "#F3E8FF", "darkHex": "#6D28D9"},
+        "onPrimaryContainer": {"lightHex": "#3B0764", "darkHex": "#F3E8FF"},
+        "secondary": {"lightHex": "#7C3AED", "darkHex": "#B794F6"},
+        "onSecondary": {"lightHex": "#FFFFFF", "darkHex": "#3B0764"},
+        "secondaryContainer": {"lightHex": "#EADDFF", "darkHex": "#5B21B6"},
+        "onSecondaryContainer": {"lightHex": "#3B0764", "darkHex": "#EADDFF"},
+        "background": {"lightHex": "#FDF6FF", "darkHex": "#170A20"},
+        "onBackground": {"lightHex": "#3B0764", "darkHex": "#F0E2FF"},
+        "surface": {"lightHex": "#FFFFFF", "darkHex": "#230F32"},
+        "onSurface": {"lightHex": "#3B0764", "darkHex": "#F0E2FF"},
+        "surfaceVariant": {"lightHex": "#EDE0FB", "darkHex": "#3A1F4E"},
+        "onSurfaceVariant": {"lightHex": "#6B21A8", "darkHex": "#D9C6F0"},
+        "outline": {"lightHex": "#CBB6E8", "darkHex": "#5A3580"}
+      }
+    },
+    {
+      "id": "thor_gorgeous",
+      "name": "华丽黄紫",
+      "colors": {
+        "primary": {"lightHex": "#8B4CE0", "darkHex": "#C084FC"},
+        "onPrimary": {"lightHex": "#FFFFFF", "darkHex": "#2E1065"},
+        "primaryContainer": {"lightHex": "#EFDFFF", "darkHex": "#6B21A8"},
+        "onPrimaryContainer": {"lightHex": "#2E1065", "darkHex": "#EFDFFF"},
+        "secondary": {"lightHex": "#6D28D9", "darkHex": "#C4A5F0"},
+        "onSecondary": {"lightHex": "#FFFFFF", "darkHex": "#4C1D95"},
+        "secondaryContainer": {"lightHex": "#EEDDFF", "darkHex": "#6B21A8"},
+        "onSecondaryContainer": {"lightHex": "#4C1D95", "darkHex": "#EEDDFF"},
+        "background": {"lightHex": "#FCF5FF", "darkHex": "#180A26"},
+        "onBackground": {"lightHex": "#2E1065", "darkHex": "#EFDFFF"},
+        "surface": {"lightHex": "#FFFFFF", "darkHex": "#241035"},
+        "onSurface": {"lightHex": "#2E1065", "darkHex": "#EFDFFF"},
+        "surfaceVariant": {"lightHex": "#EFE2FC", "darkHex": "#3A1F52"},
+        "onSurfaceVariant": {"lightHex": "#5B21B6", "darkHex": "#D4BCEC"},
+        "outline": {"lightHex": "#CEB8E8", "darkHex": "#5C3A7E"}
+      }
+    },
+    {
+      "id": "thor_pale",
+      "name": "淡色黄紫",
+      "colors": {
+        "primary": {"lightHex": "#9F7CCE", "darkHex": "#C9B0E8"},
+        "onPrimary": {"lightHex": "#FFFFFF", "darkHex": "#3B2E5C"},
+        "primaryContainer": {"lightHex": "#EDE3F8", "darkHex": "#5C4E82"},
+        "onPrimaryContainer": {"lightHex": "#3B2E5C", "darkHex": "#EDE3F8"},
+        "secondary": {"lightHex": "#9B8FC0", "darkHex": "#CFC4E8"},
+        "onSecondary": {"lightHex": "#FFFFFF", "darkHex": "#3B2E5C"},
+        "secondaryContainer": {"lightHex": "#E8E2F4", "darkHex": "#5C4E82"},
+        "onSecondaryContainer": {"lightHex": "#3B2E5C", "darkHex": "#E8E2F4"},
+        "background": {"lightHex": "#F8F4FC", "darkHex": "#191222"},
+        "onBackground": {"lightHex": "#3B2E5C", "darkHex": "#E6DCF0"},
+        "surface": {"lightHex": "#FFFFFF", "darkHex": "#221B2C"},
+        "onSurface": {"lightHex": "#3B2E5C", "darkHex": "#E6DCF0"},
+        "surfaceVariant": {"lightHex": "#EAE2F4", "darkHex": "#352B46"},
+        "onSurfaceVariant": {"lightHex": "#5C4E82", "darkHex": "#CFC0E0"},
+        "outline": {"lightHex": "#D3C6E4", "darkHex": "#5A4E70"}
+      }
+    }
+  ]
+}

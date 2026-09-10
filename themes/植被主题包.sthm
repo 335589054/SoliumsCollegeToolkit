@@ -1,0 +1,111 @@
+{
+  "format": "unitoolkit-theme",
+  "version": 1,
+  "themes": [
+    {
+      "id": "flora_rainforest",
+      "name": "热带雨林",
+      "colors": {
+        "primary": {"lightHex": "#1B7A3D", "darkHex": "#72CE8E"},
+        "onPrimary": {"lightHex": "#FFFFFF", "darkHex": "#003D16"},
+        "primaryContainer": {"lightHex": "#C9F0D4", "darkHex": "#0E5A28"},
+        "onPrimaryContainer": {"lightHex": "#003D16", "darkHex": "#C9F0D4"},
+        "secondary": {"lightHex": "#3D9B62", "darkHex": "#8FD8A6"},
+        "onSecondary": {"lightHex": "#FFFFFF", "darkHex": "#003D16"},
+        "secondaryContainer": {"lightHex": "#DFF5E4", "darkHex": "#1E6B36"},
+        "onSecondaryContainer": {"lightHex": "#003D16", "darkHex": "#DFF5E4"},
+        "background": {"lightHex": "#EAF5EC", "darkHex": "#0A1A0E"},
+        "onBackground": {"lightHex": "#003D16", "darkHex": "#D0E8D8"},
+        "surface": {"lightHex": "#F4FAF6", "darkHex": "#10261A"},
+        "onSurface": {"lightHex": "#003D16", "darkHex": "#D0E8D8"},
+        "surfaceVariant": {"lightHex": "#DFEFE2", "darkHex": "#1C3A28"},
+        "onSurfaceVariant": {"lightHex": "#3A6B4C", "darkHex": "#A8CCA8"},
+        "outline": {"lightHex": "#BDD8C4", "darkHex": "#2E5A3A"}
+      }
+    },
+    {
+      "id": "flora_sakura",
+      "name": "樱花",
+      "colors": {
+        "primary": {"lightHex": "#EC7FA9", "darkHex": "#FFA8C9"},
+        "onPrimary": {"lightHex": "#FFFFFF", "darkHex": "#5A1E38"},
+        "primaryContainer": {"lightHex": "#FBDCE8", "darkHex": "#8A3A5E"},
+        "onPrimaryContainer": {"lightHex": "#5A1E38", "darkHex": "#FBDCE8"},
+        "secondary": {"lightHex": "#C77EB2", "darkHex": "#E3A8D4"},
+        "onSecondary": {"lightHex": "#FFFFFF", "darkHex": "#5A1E4A"},
+        "secondaryContainer": {"lightHex": "#F9E7F0", "darkHex": "#8A4A74"},
+        "onSecondaryContainer": {"lightHex": "#5A1E4A", "darkHex": "#F9E7F0"},
+        "background": {"lightHex": "#FFF1F5", "darkHex": "#1E1018"},
+        "onBackground": {"lightHex": "#5A1E38", "darkHex": "#F6DCE6"},
+        "surface": {"lightHex": "#FFF8FB", "darkHex": "#2A161E"},
+        "onSurface": {"lightHex": "#5A1E38", "darkHex": "#F6DCE6"},
+        "surfaceVariant": {"lightHex": "#FBE7EE", "darkHex": "#3A2430"},
+        "onSurfaceVariant": {"lightHex": "#8A4A66", "darkHex": "#E2B8CA"},
+        "outline": {"lightHex": "#F0CBD8", "darkHex": "#5E3A4A"}
+      }
+    },
+    {
+      "id": "flora_willow",
+      "name": "杨柳桃花",
+      "colors": {
+        "primary": {"lightHex": "#5FA8A0", "darkHex": "#A8DDD4"},
+        "onPrimary": {"lightHex": "#FFFFFF", "darkHex": "#06453E"},
+        "primaryContainer": {"lightHex": "#D6EFEB", "darkHex": "#2C6A62"},
+        "onPrimaryContainer": {"lightHex": "#06453E", "darkHex": "#D6EFEB"},
+        "secondary": {"lightHex": "#E8A0C0", "darkHex": "#F0BED2"},
+        "onSecondary": {"lightHex": "#FFFFFF", "darkHex": "#5A1E3A"},
+        "secondaryContainer": {"lightHex": "#FBE5ef", "darkHex": "#8A3A5E"},
+        "onSecondaryContainer": {"lightHex": "#5A1E3A", "darkHex": "#FBE5EF"},
+        "background": {"lightHex": "#EDF7F5", "darkHex": "#0C1E1C"},
+        "onBackground": {"lightHex": "#06453E", "darkHex": "#D2E8E4"},
+        "surface": {"lightHex": "#F6FBFA", "darkHex": "#142C28"},
+        "onSurface": {"lightHex": "#06453E", "darkHex": "#D2E8E4"},
+        "surfaceVariant": {"lightHex": "#E0F0EC", "darkHex": "#20423C"},
+        "onSurfaceVariant": {"lightHex": "#3E6A64", "darkHex": "#AECCC6"},
+        "outline": {"lightHex": "#C2DED8", "darkHex": "#305A54"}
+      }
+    },
+    {
+      "id": "flora_desert",
+      "name": "沙漠",
+      "colors": {
+        "primary": {"lightHex": "#C0892A", "darkHex": "#F0BF5A"},
+        "onPrimary": {"lightHex": "#FFFFFF", "darkHex": "#4A2E00"},
+        "primaryContainer": {"lightHex": "#F5E0B4", "darkHex": "#6E5220"},
+        "onPrimaryContainer": {"lightHex": "#4A2E00", "darkHex": "#F5E0B4"},
+        "secondary": {"lightHex": "#D9A95A", "darkHex": "#E8C07A"},
+        "onSecondary": {"lightHex": "#FFFFFF", "darkHex": "#4A2E00"},
+        "secondaryContainer": {"lightHex": "#FAECD0", "darkHex": "#6E6236"},
+        "onSecondaryContainer": {"lightHex": "#4A2E00", "darkHex": "#FAECD0"},
+        "background": {"lightHex": "#FBF3E2", "darkHex": "#1C1608"},
+        "onBackground": {"lightHex": "#4A2E00", "darkHex": "#EDE0BE"},
+        "surface": {"lightHex": "#FFFBF0", "darkHex": "#282010"},
+        "onSurface": {"lightHex": "#4A2E00", "darkHex": "#EDE0BE"},
+        "surfaceVariant": {"lightHex": "#F3E9D2", "darkHex": "#3A301E"},
+        "onSurfaceVariant": {"lightHex": "#7A6238", "darkHex": "#D9C894"},
+        "outline": {"lightHex": "#E0CFA6", "darkHex": "#5C4E2A"}
+      }
+    },
+    {
+      "id": "flora_taiga",
+      "name": "针叶林",
+      "colors": {
+        "primary": {"lightHex": "#2E5D4F", "darkHex": "#7EC4AF"},
+        "onPrimary": {"lightHex": "#FFFFFF", "darkHex": "#09362C"},
+        "primaryContainer": {"lightHex": "#C8E4DC", "darkHex": "#174A3E"},
+        "onPrimaryContainer": {"lightHex": "#09362C", "darkHex": "#C8E4DC"},
+        "secondary": {"lightHex": "#5A8A7C", "darkHex": "#A2CCBC"},
+        "onSecondary": {"lightHex": "#FFFFFF", "darkHex": "#0A2E26"},
+        "secondaryContainer": {"lightHex": "#DCEEE8", "darkHex": "#2A5E50"},
+        "onSecondaryContainer": {"lightHex": "#0A2E26", "darkHex": "#DCEEE8"},
+        "background": {"lightHex": "#E8F0EC", "darkHex": "#0A1612"},
+        "onBackground": {"lightHex": "#0A362C", "darkHex": "#D2E6E0"},
+        "surface": {"lightHex": "#F2F8F5", "darkHex": "#12221C"},
+        "onSurface": {"lightHex": "#0A362C", "darkHex": "#D2E6E0"},
+        "surfaceVariant": {"lightHex": "#DCEBE6", "darkHex": "#1E3A32"},
+        "onSurfaceVariant": {"lightHex": "#3A6258", "darkHex": "#ABC6BE"},
+        "outline": {"lightHex": "#C2D8D0", "darkHex": "#2E4E44"}
+      }
+    }
+  ]
+}

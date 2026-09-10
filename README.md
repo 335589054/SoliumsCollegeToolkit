@@ -2,7 +2,8 @@
 
 > 面向大学生的一站式本地优先（Local-First）便捷工具 APP，覆盖**学习 / 生活 / 娱乐**三大场景。
 
-- 版本：v1.0.3-bugfix1（`versionCode 6`）
+- 版本：v1.1.0（`versionCode 14`，正式版）
+- 包名：`com.solium.Unitoolkit`
 - 平台：Android（Kotlin + Jetpack Compose）
 - 文档：[开发文档 DEV-DOC.md](./DEV-DOC.md) ｜ [更新记录 CHANGELOG.md](./CHANGELOG.md)
 
@@ -146,6 +147,8 @@ UniToolKit/
 
 | 版本 | 说明 |
 |------|------|
+| v1.1.0 | **正式版**：终止 1.0.4 rc 系列；包名变更为 `com.solium.Unitoolkit`；主题包默认折叠；备份补齐遗漏配置项 |
+| v1.0.4 | rc 系列（rc1–rc6）：主题系统升级、分组管理、快捷入口独立排序、水平滑动 / 平移动画与方向修复 |
 | v1.0.3-bugfix1 | 课表时间刻度对齐修复；日程页闪退修复；日程改为直接读写系统日历 |
 | v1.0.3 | 课表三日时间轴、自定义主题颜色选择器、系统日程 Instances 读取、上隐条自动保存 |
 | v1.0.2 | 颜色点选、课表星期多选与日历时间轴、采购 / 账单自动名称、系统日程刷新 |

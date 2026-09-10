@@ -1,0 +1,90 @@
+{
+  "format": "unitoolkit-theme",
+  "version": 1,
+  "themes": [
+    {
+      "id": "contrast_blue",
+      "name": "高对比·蓝",
+      "colors": {
+        "primary": {"lightHex": "#001EFF", "darkHex": "#8AA5FF"},
+        "onPrimary": {"lightHex": "#FFFFFF", "darkHex": "#00124D"},
+        "primaryContainer": {"lightHex": "#CCD9FF", "darkHex": "#002B80"},
+        "onPrimaryContainer": {"lightHex": "#00124D", "darkHex": "#CCD9FF"},
+        "secondary": {"lightHex": "#4A6AFF", "darkHex": "#B0BFFF"},
+        "onSecondary": {"lightHex": "#FFFFFF", "darkHex": "#00124D"},
+        "secondaryContainer": {"lightHex": "#E2E9FF", "darkHex": "#2640A0"},
+        "onSecondaryContainer": {"lightHex": "#00124D", "darkHex": "#E2E9FF"},
+        "background": {"lightHex": "#FFFFFF", "darkHex": "#00051A"},
+        "onBackground": {"lightHex": "#000000", "darkHex": "#FFFFFF"},
+        "surface": {"lightHex": "#FFFFFF", "darkHex": "#001033"},
+        "onSurface": {"lightHex": "#000000", "darkHex": "#FFFFFF"},
+        "surfaceVariant": {"lightHex": "#F0F2FF", "darkHex": "#14287A"},
+        "onSurfaceVariant": {"lightHex": "#000633", "darkHex": "#AFC0FF"},
+        "outline": {"lightHex": "#0022A8", "darkHex": "#3350C0"}
+      }
+    },
+    {
+      "id": "contrast_white",
+      "name": "高对比·白",
+      "colors": {
+        "primary": {"lightHex": "#000000", "darkHex": "#FFFFFF"},
+        "onPrimary": {"lightHex": "#FFFFFF", "darkHex": "#000000"},
+        "primaryContainer": {"lightHex": "#333333", "darkHex": "#333333"},
+        "onPrimaryContainer": {"lightHex": "#FFFFFF", "darkHex": "#FFFFFF"},
+        "secondary": {"lightHex": "#4A4A4A", "darkHex": "#CCCCCC"},
+        "onSecondary": {"lightHex": "#FFFFFF", "darkHex": "#000000"},
+        "secondaryContainer": {"lightHex": "#E6E6E6", "darkHex": "#4A4A4A"},
+        "onSecondaryContainer": {"lightHex": "#000000", "darkHex": "#FFFFFF"},
+        "background": {"lightHex": "#FFFFFF", "darkHex": "#000000"},
+        "onBackground": {"lightHex": "#000000", "darkHex": "#FFFFFF"},
+        "surface": {"lightHex": "#FFFFFF", "darkHex": "#0A0A0A"},
+        "onSurface": {"lightHex": "#000000", "darkHex": "#FFFFFF"},
+        "surfaceVariant": {"lightHex": "#F2F2F2", "darkHex": "#1A1A1A"},
+        "onSurfaceVariant": {"lightHex": "#2E2E2E", "darkHex": "#D4D4D4"},
+        "outline": {"lightHex": "#000000", "darkHex": "#E6E6E6"}
+      }
+    },
+    {
+      "id": "contrast_green",
+      "name": "高对比·绿",
+      "colors": {
+        "primary": {"lightHex": "#00B800", "darkHex": "#66FF66"},
+        "onPrimary": {"lightHex": "#FFFFFF", "darkHex": "#002B00"},
+        "primaryContainer": {"lightHex": "#C7F0C7", "darkHex": "#004D00"},
+        "onPrimaryContainer": {"lightHex": "#002B00", "darkHex": "#C7F0C7"},
+        "secondary": {"lightHex": "#4A9E2E", "darkHex": "#A8E8A0"},
+        "onSecondary": {"lightHex": "#FFFFFF", "darkHex": "#002B00"},
+        "secondaryContainer": {"lightHex": "#E2F5DE", "darkHex": "#1E6628"},
+        "onSecondaryContainer": {"lightHex": "#002B00", "darkHex": "#E2F5DE"},
+        "background": {"lightHex": "#FFFFFF", "darkHex": "#001F00"},
+        "onBackground": {"lightHex": "#000000", "darkHex": "#FFFFFF"},
+        "surface": {"lightHex": "#FFFFFF", "darkHex": "#003010"},
+        "onSurface": {"lightHex": "#000000", "darkHex": "#FFFFFF"},
+        "surfaceVariant": {"lightHex": "#F0FAEE", "darkHex": "#144A1E"},
+        "onSurfaceVariant": {"lightHex": "#003000", "darkHex": "#B0E8A8"},
+        "outline": {"lightHex": "#007800", "darkHex": "#2E8A3A"}
+      }
+    },
+    {
+      "id": "contrast_red",
+      "name": "高对比·红",
+      "colors": {
+        "primary": {"lightHex": "#D50000", "darkHex": "#FF6E6E"},
+        "onPrimary": {"lightHex": "#FFFFFF", "darkHex": "#4D0000"},
+        "primaryContainer": {"lightHex": "#FACFCF", "darkHex": "#7A0012"},
+        "onPrimaryContainer": {"lightHex": "#4D0000", "darkHex": "#FACFCF"},
+        "secondary": {"lightHex": "#A82438", "darkHex": "#FF9A9A"},
+        "onSecondary": {"lightHex": "#FFFFFF", "darkHex": "#4D0000"},
+        "secondaryContainer": {"lightHex": "#FCDADC", "darkHex": "#8A1E2C"},
+        "onSecondaryContainer": {"lightHex": "#4D0000", "darkHex": "#FCDADC"},
+        "background": {"lightHex": "#FFFFFF", "darkHex": "#1E0000"},
+        "onBackground": {"lightHex": "#000000", "darkHex": "#FFFFFF"},
+        "surface": {"lightHex": "#FFFFFF", "darkHex": "#2E0507"},
+        "onSurface": {"lightHex": "#000000", "darkHex": "#FFFFFF"},
+        "surfaceVariant": {"lightHex": "#FBF0F0", "darkHex": "#4A1618"},
+        "onSurfaceVariant": {"lightHex": "#4D0000", "darkHex": "#FFB0B0"},
+        "outline": {"lightHex": "#A60000", "darkHex": "#B0303A"}
+      }
+    }
+  ]
+}
