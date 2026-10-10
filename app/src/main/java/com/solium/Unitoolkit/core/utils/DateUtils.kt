@@ -55,6 +55,17 @@ object DateUtils {
         return diffDays / 7 + 1
     }
 
+    /** 求「第 week 周、星期 weekday」对应的具体日期；起始日为空或非法时返回 null。 */
+    fun dateOfWeekday(semesterStart: String, week: Int, weekday: Int): String? {
+        val start = parseDateOnly(semesterStart) ?: return null
+        if (week < 1) return null
+        val startWeekday = weekdayOf(start)
+        val c = Calendar.getInstance()
+        c.time = start
+        c.add(Calendar.DAY_OF_YEAR, (week - 1) * 7 + (weekday - startWeekday))
+        return dateFmt.format(c.time)
+    }
+
     fun weekdayZh(w: Int): String = when (w) {
         1 -> "周一"; 2 -> "周二"; 3 -> "周三"; 4 -> "周四"; 5 -> "周五"; 6 -> "周六"; 7 -> "周日"
         else -> ""

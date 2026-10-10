@@ -206,7 +206,7 @@ fun SettingsScreen(navController: NavController, vm: SettingsViewModel = viewMod
 
         SectionLabel("数据管理")
         Text(
-            "v1.1.0 起应用包名变更为 com.solium.Unitoolkit，旧版本数据不会自动迁移。升级前请先「导出数据」得到 .stbc 备份，安装新版本后再「导入数据」恢复。",
+            "备份（.stbc）包含全部业务数据、设置、内嵌图片、调休表与加密后的密码本密文；密码本仍需原 PIN 才能解密。",
             fontSize = 12.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(start = 4.dp, bottom = 6.dp),
@@ -222,7 +222,7 @@ fun SettingsScreen(navController: NavController, vm: SettingsViewModel = viewMod
 
         SectionLabel("系统")
         SettingsEntry("scroll-text", "更新日志", "查看版本更新记录") { navController.navigate(Routes.CHANGELOG) }
-        SettingsEntry("info", "关于 Solium的工具箱", "v1.1.0 · 大学生一站式工具") { showAbout = true }
+        SettingsEntry("info", "关于 Solium的工具箱", "v1.2.0 · 大学生一站式工具") { showAbout = true }
     }
 
     if (showAbout) {
@@ -231,7 +231,7 @@ fun SettingsScreen(navController: NavController, vm: SettingsViewModel = viewMod
             title = { Text("关于 Solium的工具箱") },
             text = {
                 Text(
-                    "Solium的工具箱 v1.1.0\n\n" +
+                    "Solium的工具箱 v1.2.0\n\n" +
                         "面向大学生的一站式便捷工具 APP，覆盖学习、生活、娱乐三大场景。\n\n" +
                         "本地优先 · 轻量无感 · 可扩展 · 沉浸专注\n\n" +
                         "开发者：Solium\n" +

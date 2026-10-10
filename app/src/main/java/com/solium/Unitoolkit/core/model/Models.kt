@@ -99,6 +99,38 @@ fun defaultPeriodTimings(): List<PeriodTiming> = emptyList()
 fun List<PeriodTiming>.resolvePeriod(startTime: String): PeriodTiming? =
     firstOrNull { it.startTime == startTime }
 
+/** 按课程显式绑定的节次序号查找预设；section <= 0 表示未绑定，返回 null（不再按时间强制命中）。 */
+fun List<PeriodTiming>.resolveBySection(section: Int): PeriodTiming? =
+    if (section <= 0) null else firstOrNull { it.section == section }
+
+/** 调休设置：在 date 这天按 sourceDate 的课表上课（如 10-10 补 10-07 的课）。 */
+@Serializable
+data class HolidayAdjustment(
+    val id: String = "",
+    val date: String = "",        // 实际上课日期 yyyy-MM-dd
+    val sourceDate: String = "",  // 借用其课表的日期 yyyy-MM-dd
+    val note: String = "",
+)
+
+/** 调休表（.sltx）：本质是 JSON，可整体导入 / 导出。 */
+@Serializable
+data class HolidayPackage(
+    val format: String = "unitoolkit-sltx",
+    val version: Int = 1,
+    val name: String = "",
+    val adjustments: List<HolidayAdjustment> = emptyList(),
+)
+
+/** 账号密码本条目；整体序列化后加密落盘，不单独存储明文密码。 */
+@Serializable
+data class VaultEntry(
+    val id: String = "",
+    val platform: String = "",   // 平台名称
+    val account: String = "",    // 账号
+    val password: String = "",   // 密码（随整包加密保存）
+    val note: String = "",
+)
+
 @Serializable
 data class ThemeRoleColors(
     val lightHex: String = "",

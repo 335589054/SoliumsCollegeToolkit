@@ -84,6 +84,8 @@ fun CourseEditScreen(navController: NavController, vm: CourseViewModel = viewMod
     var onceWeek by rememberSaveable { mutableStateOf(existing?.onceWeek ?: 1) }
     var selectedWeeks by rememberSaveable { mutableStateOf(existing?.selectedWeeks ?: "") }
     var selectedDates by rememberSaveable { mutableStateOf(existing?.selectedDates ?: "") }
+    // 显式绑定的节次序号；仅在「从节次时间预设快速填写」时绑定，手动改时间即解除绑定
+    var periodSection by rememberSaveable { mutableStateOf(existing?.periodSection ?: 0) }
     var selectedDays by rememberSaveable {
         mutableStateOf(
             existing?.weekdaysText?.takeIf { it.isNotBlank() }
@@ -111,6 +113,7 @@ fun CourseEditScreen(navController: NavController, vm: CourseViewModel = viewMod
             onceWeek = existing.onceWeek
             selectedWeeks = existing.selectedWeeks
             selectedDates = existing.selectedDates
+            periodSection = existing.periodSection
             selectedDays = existing.weekdaysText.ifBlank { existing.weekday.toString() }
             initialized = true
         }
@@ -133,6 +136,8 @@ fun CourseEditScreen(navController: NavController, vm: CourseViewModel = viewMod
         if (p.onceWeek > 0) onceWeek = p.onceWeek
         if (p.selectedWeeks.isNotBlank()) selectedWeeks = p.selectedWeeks
         if (p.selectedDates.isNotBlank()) selectedDates = p.selectedDates
+        // 预设不携带节次绑定，套用后解除绑定，避免误套节次时间
+        periodSection = 0
     }
 
     Scaffold(
@@ -162,6 +167,7 @@ fun CourseEditScreen(navController: NavController, vm: CourseViewModel = viewMod
                                     onceWeek = onceWeek,
                                     selectedWeeks = selectedWeeks,
                                     selectedDates = dates,
+                                    periodSection = periodSection,
                                 )
                             )
                             navController.popBackStack()
@@ -274,8 +280,31 @@ fun CourseEditScreen(navController: NavController, vm: CourseViewModel = viewMod
 
             SectionLabel("具体时间（HH:mm）")
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                OutlinedTextField(value = startTime, onValueChange = { startTime = it }, label = { Text("开始") }, modifier = Modifier.weight(1f), singleLine = true)
-                OutlinedTextField(value = endTime, onValueChange = { endTime = it }, label = { Text("结束") }, modifier = Modifier.weight(1f), singleLine = true)
+                OutlinedTextField(
+                    value = startTime,
+                    onValueChange = { startTime = it; periodSection = 0 },
+                    label = { Text("开始") },
+                    modifier = Modifier.weight(1f),
+                    singleLine = true,
+                )
+                OutlinedTextField(
+                    value = endTime,
+                    onValueChange = { endTime = it; periodSection = 0 },
+                    label = { Text("结束") },
+                    modifier = Modifier.weight(1f),
+                    singleLine = true,
+                )
+            }
+            if (periodSection > 0) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        "已绑定节次：第 $periodSection 节（课表按该节次预设时间显示）",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = { periodSection = 0 }) { Text("取消绑定", fontSize = 12.sp) }
+                }
             }
             if (periodTimings.any { it.startTime.isNotBlank() && it.endTime.isNotBlank() }) {
                 TextButton(onClick = { showPeriodPicker = true }) { Text("从「节次时间预设」快速填写", color = MaterialTheme.colorScheme.primary) }
@@ -324,6 +353,7 @@ fun CourseEditScreen(navController: NavController, vm: CourseViewModel = viewMod
             onPick = { p ->
                 startTime = p.startTime
                 endTime = p.endTime
+                periodSection = p.section
                 showPeriodPicker = false
             },
         )

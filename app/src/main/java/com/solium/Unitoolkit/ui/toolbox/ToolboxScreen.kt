@@ -53,6 +53,7 @@ private val categories = listOf(
         Tool("link", "便捷链接", Routes.LINKS),
         Tool("wallet", "简易账单", Routes.LEDGER),
         Tool("shopping-cart", "采购清单", Routes.SHOPPING),
+        Tool("key-round", "账号密码本", Routes.VAULT),
         Tool("user", "个人名片", Routes.PROFILE_CARD),
     )),
     ToolCategory("gamepad-2", "娱乐", listOf(

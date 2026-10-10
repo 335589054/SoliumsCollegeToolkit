@@ -22,6 +22,7 @@ data class CourseEntity(
     val onceWeek: Int = 1,           // weekType == "once" 时的具体周次
     val selectedWeeks: String = "",  // weekType == "selected"：逗号分隔周次
     val selectedDates: String = "",  // weekType == "dates"：逗号分隔日期 yyyy-MM-dd
+    val periodSection: Int = 0,      // 显式绑定的节次序号（0=未绑定）；仅绑定后才套用节次预设时间
     val createdAt: Long = System.currentTimeMillis(),
 )
 

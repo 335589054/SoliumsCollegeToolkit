@@ -103,6 +103,10 @@ fun LedgerScreen(navController: NavController, vm: LedgerViewModel = viewModel(f
         },
     ) { padding ->
         Column(Modifier.fillMaxSize().padding(padding).padding(horizontal = 20.dp)) {
+            // 总余额：统计全部记录（不限当前月份）
+            val totalBalance = entries.filter { it.type == "income" }.sumOf { it.amount } -
+                entries.filter { it.type == "expense" }.sumOf { it.amount }
+
             // 月份切换
             Row(
                 Modifier.fillMaxWidth().padding(vertical = 6.dp),
@@ -113,11 +117,12 @@ fun LedgerScreen(navController: NavController, vm: LedgerViewModel = viewModel(f
                 Box(Modifier.clip(RoundedCornerShape(10.dp)).clickable { currentMonth = shiftMonth(currentMonth, 1) }.padding(horizontal = 12.dp, vertical = 6.dp)) { Text("›", fontSize = 20.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
             }
 
-            // 本月汇总
+            // 本月汇总（含总余额）
             Row(
-                Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(MaterialTheme.colorScheme.primaryContainer).padding(18.dp),
+                Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(MaterialTheme.colorScheme.primaryContainer).padding(vertical = 18.dp, horizontal = 10.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
+                SummaryCell("总余额", totalBalance, if (totalBalance >= 0) IncomeGreen else ExpenseRed)
                 SummaryCell("本月收入", income, IncomeGreen)
                 SummaryCell("本月支出", expense, ExpenseRed)
                 SummaryCell("结余", income - expense, MaterialTheme.colorScheme.onPrimaryContainer)
@@ -213,8 +218,8 @@ private fun shiftMonth(month: String, delta: Int): String {
 @Composable
 private fun SummaryCell(label: String, value: Double, color: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(label, fontSize = 12.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
-        Text("¥${fmt(value)}", fontSize = 17.sp, fontWeight = FontWeight.Bold, color = color)
+        Text(label, fontSize = 11.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
+        Text("¥${fmt(value)}", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = color)
     }
 }
 

@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -60,6 +61,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.solium.Unitoolkit.core.model.CustomTheme
 import com.solium.Unitoolkit.core.model.ThemeRoleColors
+import com.solium.Unitoolkit.core.theme.ThemeKey
+import com.solium.Unitoolkit.core.theme.ThemePresets
 import com.solium.Unitoolkit.core.theme.ThemeRoleDefs
 import com.solium.Unitoolkit.core.theme.buildColorScheme
 import com.solium.Unitoolkit.core.theme.resolveTheme
@@ -166,6 +169,7 @@ fun ThemeManagerScreen(navController: NavController, vm: SettingsViewModel = vie
     if (showEditor && editing != null) {
         ThemeEditorDialog(
             initial = editing!!,
+            importables = importableThemes(editing!!, customThemes),
             onDismiss = { showEditor = false },
             onSave = { vm.saveCustomTheme(it); showEditor = false },
         )
@@ -365,18 +369,23 @@ private fun ThemeGroupedList(
 @Composable
 private fun ThemeEditorDialog(
     initial: CustomTheme,
+    importables: List<CustomTheme>,
     onDismiss: () -> Unit,
     onSave: (CustomTheme) -> Unit,
 ) {
     var draft by remember { mutableStateOf(initial) }
     var picking by remember { mutableStateOf<PickTarget?>(null) }
     var showPreview by remember { mutableStateOf(false) }
+    var showImport by remember { mutableStateOf(false) }
     Dialog(onDismissRequest = onDismiss) {
         Column(
             Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surface).padding(18.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(if (initial.id.isBlank()) "新建自定义主题" else "编辑自定义主题", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+            if (importables.isNotEmpty()) {
+                TextButton(onClick = { showImport = true }) { Text("导入已有主题（复制其配色与背景图）", fontSize = 13.sp) }
+            }
             OutlinedTextField(
                 value = draft.name,
                 onValueChange = { draft = draft.copy(name = it) },
@@ -464,7 +473,84 @@ private fun ThemeEditorDialog(
     if (showPreview) {
         ThemePreviewDialog(theme = draft) { showPreview = false }
     }
+    if (showImport) {
+        ImportThemeDialog(
+            themes = importables,
+            onDismiss = { showImport = false },
+            onPick = { picked ->
+                // 只复制配色与背景图，保留当前主题的名称 / 分组 / ID
+                draft = draft.copy(
+                    colors = picked.colors,
+                    homeBgImage = picked.homeBgImage,
+                    pomodoroBgImage = picked.pomodoroBgImage,
+                    pomodoroImmersiveBgImage = picked.pomodoroImmersiveBgImage,
+                    courseBgImage = picked.courseBgImage,
+                    courseBgOpacity = picked.courseBgOpacity,
+                    homeCardOpacity = picked.homeCardOpacity,
+                )
+                showImport = false
+            },
+        )
+    }
 }
+
+/** 选择一套已有主题（预设或自定义）复制其配色与背景图到当前草稿。 */
+@Composable
+private fun ImportThemeDialog(
+    themes: List<CustomTheme>,
+    onDismiss: () -> Unit,
+    onPick: (CustomTheme) -> Unit,
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Column(
+            Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(MaterialTheme.colorScheme.surface)
+                .heightIn(max = 520.dp).padding(18.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text("导入已有主题", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+            Text("选择后将复制该主题的颜色角色、背景图与透明度（不会覆盖名称与分组）。", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Column(
+                Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                themes.forEach { t ->
+                    Row(
+                        Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .clickable { onPick(t) }
+                            .padding(horizontal = 12.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        val primary = t.colors["primary"]
+                        Box(
+                            Modifier.size(20.dp).clip(RoundedCornerShape(6.dp)).background(
+                                runCatching {
+                                    Color(android.graphics.Color.parseColor(primary?.lightHex?.ifBlank { null } ?: "#8B5CF6"))
+                                }.getOrDefault(Color.Gray),
+                            ),
+                        )
+                        Spacer(Modifier.width(10.dp))
+                        Column(Modifier.weight(1f)) {
+                            Text(t.name, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+                            if (t.group.isNotBlank()) {
+                                Text(t.group, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                        }
+                    }
+                }
+            }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                TextButton(onClick = onDismiss) { Text("取消") }
+            }
+        }
+    }
+}
+
+/** 可导入的已有主题：12 套内置预设 + 其它自定义主题（排除自身）。 */
+private fun importableThemes(current: CustomTheme, customThemes: List<CustomTheme>): List<CustomTheme> =
+    ThemeKey.entries.map {
+        ThemePresets.paletteFor(it).toCustomTheme(id = "preset:${it.key}", name = "${it.label}（预设）")
+    } + customThemes.filter { it.id.isNotBlank() && it.id != current.id }
 
 private data class PickTarget(val role: String, val light: Boolean)
 

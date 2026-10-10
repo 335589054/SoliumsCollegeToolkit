@@ -20,8 +20,14 @@ interface CourseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(course: CourseEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(courses: List<CourseEntity>)
+
     @Delete
     suspend fun delete(course: CourseEntity)
+
+    @Query("DELETE FROM courses")
+    suspend fun clearAll()
 }
 
 @Dao

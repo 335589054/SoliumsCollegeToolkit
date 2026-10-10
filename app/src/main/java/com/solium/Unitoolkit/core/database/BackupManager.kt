@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.withTransaction
 import com.solium.Unitoolkit.core.model.CoursePreset
 import com.solium.Unitoolkit.core.model.CustomTheme
+import com.solium.Unitoolkit.core.model.HolidayAdjustment
 import com.solium.Unitoolkit.core.model.OverlayConfig
 import com.solium.Unitoolkit.core.model.PeriodTiming
 import com.solium.Unitoolkit.core.model.PersonalProfile
@@ -13,6 +14,7 @@ import com.solium.Unitoolkit.core.model.defaultGpaFormula
 import com.solium.Unitoolkit.core.model.defaultPomodoroPresets
 import com.solium.Unitoolkit.core.storage.SettingsRepository
 import com.solium.Unitoolkit.core.theme.UiMode
+import com.solium.Unitoolkit.core.utils.VaultCrypto
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -20,7 +22,7 @@ import kotlinx.serialization.json.Json
 /** 备份文件的顶层结构：包含全部业务表的数据快照，采用纯文本 JSON 存储。 */
 @Serializable
 data class BackupData(
-    val formatVersion: Int = 3,
+    val formatVersion: Int = 4,
     val exportedAt: Long = System.currentTimeMillis(),
     val courses: List<CourseEntity> = emptyList(),
     val notes: List<NoteEntity> = emptyList(),
@@ -59,6 +61,13 @@ data class BackupData(
     val semesterStartDate: String = "",
     val gpaFormula: GpaFormula? = null,
     val periodTimings: List<PeriodTiming> = emptyList(),
+    // v1.2.0：调休表与账号密码本
+    val holidayAdjustments: List<HolidayAdjustment> = emptyList(),
+    /** 密码本派生参数与密文（不含 PIN）；还原后仍需输入原 PIN 才能解密。 */
+    val vaultSalt: String = "",
+    val vaultIterations: Int = 0,
+    val vaultVerifier: String = "",
+    val vaultBlob: String = "",
 )
 
 /** 负责将数据库数据序列化为 JSON（导出）以及从 JSON 恢复（导入/清空）。 */
@@ -109,6 +118,12 @@ class BackupManager(
             semesterStartDate = settings.semesterStartDate.first(),
             gpaFormula = settings.gpaFormula.first(),
             periodTimings = settings.periodTimings.first(),
+            // v1.2.0：调休表 + 密码本密文
+            holidayAdjustments = settings.holidayAdjustments.first(),
+            vaultSalt = settings.vaultSalt.first(),
+            vaultIterations = settings.vaultIterations.first(),
+            vaultVerifier = settings.vaultVerifier.first(),
+            vaultBlob = settings.vaultBlob.first(),
         )
         return json.encodeToString(BackupData.serializer(), data)
     }
@@ -160,6 +175,8 @@ class BackupManager(
             settings.setKeepScreenOn(false)
             settings.setImmersiveBrightness(0.3f)
             settings.setPeriodTimings(emptyList())
+            settings.setHolidayAdjustments(emptyList())
+            settings.clearVault()
         }
         restoredProfile?.let { settings.setProfile(it) }
         restoredOverlay?.let { settings.setOverlayConfig(it) }
@@ -181,6 +198,16 @@ class BackupManager(
         data.keepScreenOn?.let { settings.setKeepScreenOn(it) }
         data.immersiveBrightness?.let { settings.setImmersiveBrightness(it) }
         if (data.periodTimings.isNotEmpty()) settings.setPeriodTimings(data.periodTimings)
+        // v1.2.0：调休表与密码本（密文整体还原，解锁仍需原 PIN）
+        if (data.holidayAdjustments.isNotEmpty()) settings.setHolidayAdjustments(data.holidayAdjustments)
+        if (data.vaultBlob.isNotBlank() && data.vaultSalt.isNotBlank()) {
+            settings.setVault(
+                salt = data.vaultSalt,
+                iterations = data.vaultIterations.takeIf { it > 0 } ?: VaultCrypto.ITERATIONS,
+                verifier = data.vaultVerifier,
+                blob = data.vaultBlob,
+            )
+        }
     }
 
     /** 清空全部业务数据（保留数据库结构）。 */
@@ -204,6 +231,8 @@ class BackupManager(
         settings.setKeepScreenOn(false)
         settings.setImmersiveBrightness(0.3f)
         settings.setPeriodTimings(emptyList())
+        settings.setHolidayAdjustments(emptyList())
+        settings.clearVault()
     }
 
     private suspend fun clearTables(dao: BackupDao) {

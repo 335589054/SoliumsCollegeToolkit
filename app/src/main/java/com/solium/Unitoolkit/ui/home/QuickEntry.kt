@@ -16,5 +16,6 @@ val quickTools = listOf(
     QuickTool("gpa", "graduation-cap", "绩点", Routes.GPA),
     QuickTool("links", "link", "链接", Routes.LINKS),
     QuickTool("shopping", "shopping-cart", "采购", Routes.SHOPPING),
+    QuickTool("vault", "key-round", "密码本", Routes.VAULT),
     QuickTool("overlay", "music", "上隐条", Routes.OVERLAY),
 )

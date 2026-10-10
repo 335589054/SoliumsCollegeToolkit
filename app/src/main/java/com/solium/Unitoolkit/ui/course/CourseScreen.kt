@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,9 +31,11 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -52,13 +55,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.solium.Unitoolkit.core.database.CourseEntity
 import com.solium.Unitoolkit.core.database.matchesWeek
 import com.solium.Unitoolkit.core.database.matchesWeekday
+import com.solium.Unitoolkit.core.model.HolidayAdjustment
 import com.solium.Unitoolkit.core.model.PeriodTiming
-import com.solium.Unitoolkit.core.model.resolvePeriod
+import com.solium.Unitoolkit.core.model.resolveBySection
 import com.solium.Unitoolkit.core.theme.LocalCustomTheme
 import com.solium.Unitoolkit.core.theme.themeBackground
 import com.solium.Unitoolkit.core.utils.DateTimePickers
@@ -73,6 +78,7 @@ import com.solium.Unitoolkit.ui.navigation.Routes
 fun CourseScreen(navController: NavController, vm: CourseViewModel = viewModel(factory = CourseViewModel.Factory)) {
     val courses by vm.courses.collectAsState()
     val periodTimings by vm.periodTimings.collectAsState()
+    val adjustments by vm.holidayAdjustments.collectAsState()
     val week by vm.currentWeek.collectAsState()
     val semesterWeeks by vm.semesterWeeks.collectAsState()
     val semesterStart by vm.semesterStartDate.collectAsState()
@@ -80,6 +86,8 @@ fun CourseScreen(navController: NavController, vm: CourseViewModel = viewModel(f
     var viewMode by remember { mutableStateOf("three") }
     var menuOpen by remember { mutableStateOf(false) }
     var showSemester by remember { mutableStateOf(false) }
+    var showClearConfirm by remember { mutableStateOf(false) }
+    var showJsonImport by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     var pendingExport by remember { mutableStateOf("") }
@@ -127,6 +135,37 @@ fun CourseScreen(navController: NavController, vm: CourseViewModel = viewModel(f
                                 onClick = {
                                     menuOpen = false
                                     navController.navigate(Routes.COURSE_PERIODS)
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text("调休编辑器") },
+                                onClick = {
+                                    menuOpen = false
+                                    navController.navigate(Routes.HOLIDAY_ADJUST)
+                                },
+                            )
+                            HorizontalDivider()
+                            DropdownMenuItem(
+                                text = { Text("导出 AI 提示词模板") },
+                                onClick = {
+                                    menuOpen = false
+                                    pendingExport = CourseExport.aiPromptTemplate()
+                                    exportLauncher.launch("课表导入提示词.md")
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text("从文本导入 JSON") },
+                                onClick = {
+                                    menuOpen = false
+                                    showJsonImport = true
+                                },
+                            )
+                            HorizontalDivider()
+                            DropdownMenuItem(
+                                text = { Text("一键清空课表", color = MaterialTheme.colorScheme.error) },
+                                onClick = {
+                                    menuOpen = false
+                                    showClearConfirm = true
                                 },
                             )
                         }
@@ -206,7 +245,7 @@ fun CourseScreen(navController: NavController, vm: CourseViewModel = viewModel(f
             }
 
             if (viewMode == "three") {
-                ThreeDaySchedule(courses, week, periodTimings, Modifier.weight(1f)) { id -> navController.navigate(Routes.courseEdit(id)) }
+                ThreeDaySchedule(courses, week, semesterStart, adjustments, periodTimings, Modifier.weight(1f)) { id -> navController.navigate(Routes.courseEdit(id)) }
             } else {
                 // 7 天选择
                 Row(Modifier.fillMaxWidth().padding(vertical = 6.dp), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -227,7 +266,21 @@ fun CourseScreen(navController: NavController, vm: CourseViewModel = viewModel(f
                     }
                 }
                 Spacer(Modifier.height(12.dp))
-                val dayCourses = courses.filter { it.matchesWeekday(selectedDay) && it.matchesWeek(week) }
+                // 单日视图同样按调休映射：先把所选星期换成本周的具体日期，再判断该日是否调休
+                val selectedDate = DateUtils.dateOfWeekday(semesterStart, week, selectedDay)
+                val effectiveDate = selectedDate?.let { holidaySourceDate(it, adjustments) }
+                val effectiveDay = effectiveDate?.let { DateUtils.parseDateOnly(it)?.let { d -> DateUtils.weekdayOf(d) } } ?: selectedDay
+                val effectiveWeek = effectiveDate?.let { DateUtils.parseDateOnly(it)?.let { d -> DateUtils.weekOf(d, semesterStart.ifBlank { null }) } } ?: week
+                val isAdjusted = selectedDate != null && effectiveDate != null && effectiveDate != selectedDate
+                if (isAdjusted) {
+                    Text(
+                        "本日调休：按 ${effectiveDate}（${DateUtils.weekdayZh(effectiveDay)}）的课表上课",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(bottom = 6.dp),
+                    )
+                }
+                val dayCourses = courses.filter { it.matchesWeekday(effectiveDay) && it.matchesWeek(effectiveWeek, effectiveDate) }
                 if (dayCourses.isEmpty()) {
                     EmptyHint("${DateUtils.weekdayZh(selectedDay)}暂无课程，点击右下角添加")
                 } else {
@@ -247,6 +300,82 @@ fun CourseScreen(navController: NavController, vm: CourseViewModel = viewModel(f
             onDismiss = { showSemester = false },
             onSelect = { vm.setSemesterWeeks(it); showSemester = false },
         )
+    }
+
+    if (showClearConfirm) {
+        AlertDialog(
+            onDismissRequest = { showClearConfirm = false },
+            title = { Text("一键清空课表") },
+            text = { Text("将删除全部课程（共 ${courses.size} 条），课程预设、节次时间预设与调休表不受影响。此操作不可恢复，确认清空吗？") },
+            confirmButton = {
+                TextButton(onClick = { vm.clearCourses(); showClearConfirm = false }) {
+                    Text("清空", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = { TextButton(onClick = { showClearConfirm = false }) { Text("取消") } },
+        )
+    }
+
+    if (showJsonImport) {
+        JsonImportDialog(
+            onDismiss = { showJsonImport = false },
+            onImport = { list, overwrite -> vm.importCourses(list, overwrite); showJsonImport = false },
+        )
+    }
+}
+
+/** 从文本导入课表 JSON：粘贴大模型输出或其它工具导出的 JSON 即可解析导入。 */
+@Composable
+private fun JsonImportDialog(onDismiss: () -> Unit, onImport: (List<CourseEntity>, Boolean) -> Unit) {
+    var text by remember { mutableStateOf("") }
+    var result by remember { mutableStateOf<CourseJsonImport.Result?>(null) }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Column(
+            Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surface).padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Text("从文本导入课表", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+            Text(
+                "粘贴大模型生成的 JSON（可含 ```json 代码块与说明文字）。周次允许出现 0、-1 等特殊值，会原样导入，但课表只展示第 1 周及以后。",
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            OutlinedTextField(
+                value = text,
+                onValueChange = { text = it; result = null },
+                label = { Text("粘贴 JSON 文本") },
+                modifier = Modifier.fillMaxWidth().heightIn(min = 140.dp, max = 260.dp),
+            )
+            result?.let { r ->
+                Text(
+                    if (r.ok) "已解析 ${r.courses.size} 条课程" + if (r.warnings.isEmpty()) "" else "（${r.warnings.size} 条提示）"
+                    else "解析失败：${r.warnings.firstOrNull() ?: "未知错误"}",
+                    fontSize = 12.sp,
+                    color = if (r.ok) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                )
+                if (r.warnings.isNotEmpty()) {
+                    Column(Modifier.heightIn(max = 110.dp).verticalScroll(rememberScrollState())) {
+                        r.warnings.take(12).forEach { w ->
+                            Text("· $w", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+                }
+            }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                TextButton(onClick = onDismiss) { Text("取消") }
+                TextButton(onClick = { result = CourseJsonImport.parse(text) }, enabled = text.isNotBlank()) { Text("解析") }
+            }
+            val parsed = result?.takeIf { it.ok }
+            if (parsed != null) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    TextButton(onClick = { onImport(parsed.courses, false) }) { Text("追加导入") }
+                    TextButton(onClick = { onImport(parsed.courses, true) }) {
+                        Text("覆盖导入", color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -291,7 +420,8 @@ private fun SemesterDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int) 
 @Composable
 private fun CourseItem(course: CourseEntity, periodTimings: List<PeriodTiming>, onClick: () -> Unit) {
     val color = remember(course.colorTag) { parseHexColor(course.colorTag) }
-    val pt = periodTimings.resolvePeriod(course.startTime)
+    // 仅当课程显式绑定节次时才套用节次预设时间，避免「同开始时间被强制绑定」
+    val pt = periodTimings.resolveBySection(course.periodSection)
     val start = pt?.startTime ?: course.startTime
     val end = pt?.endTime ?: course.endTime
     Row(
@@ -319,11 +449,26 @@ private fun CourseItem(course: CourseEntity, periodTimings: List<PeriodTiming>, 
 private fun ThreeDaySchedule(
     courses: List<CourseEntity>,
     week: Int,
+    semesterStart: String,
+    adjustments: List<HolidayAdjustment>,
     periodTimings: List<PeriodTiming>,
     modifier: Modifier = Modifier,
     onCourseClick: (Long) -> Unit,
 ) {
-    val dates = (0..2).map { DateUtils.offsetDate(it) }
+    // 每天的展示信息：若该日存在调休，则按「借用的日期」取星期与周次来查找课程
+    data class DayCell(val date: String, val effectiveDate: String, val weekday: Int, val effectiveWeek: Int, val adjusted: Boolean)
+    val cells = (0..2).map { offset ->
+        val date = DateUtils.offsetDate(offset)
+        val source = holidaySourceDate(date, adjustments)
+        val parsed = DateUtils.parseDateOnly(source)
+        DayCell(
+            date = date,
+            effectiveDate = source,
+            weekday = parsed?.let { DateUtils.weekdayOf(it) } ?: 0,
+            effectiveWeek = parsed?.let { DateUtils.weekOf(it, semesterStart.ifBlank { null }) } ?: week,
+            adjusted = source != date,
+        )
+    }
     val hourHeight = 72.dp
     val timelineHeight = hourHeight * (TimelineEndHour - TimelineStartHour).toFloat()
     Column(
@@ -334,14 +479,21 @@ private fun ThreeDaySchedule(
             Modifier.fillMaxWidth().padding(start = 46.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            dates.forEach { date ->
-                val day = DateUtils.parseDateOnly(date)?.let { DateUtils.weekdayOf(it) } ?: 0
+            cells.forEach { cell ->
                 Column(
                     Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text(DateUtils.weekdayZh(day), fontSize = 13.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
-                    Text(date.substring(5), fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        DateUtils.weekdayZh(cell.weekday) + if (cell.adjusted) "·调休" else "",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (cell.adjusted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
+                    )
+                    Text(cell.date.substring(5), fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    if (cell.adjusted) {
+                        Text("按 ${shortDate(cell.effectiveDate)} 课表", fontSize = 9.sp, color = MaterialTheme.colorScheme.primary)
+                    }
                 }
             }
         }
@@ -356,10 +508,9 @@ private fun ThreeDaySchedule(
                     )
                 }
             }
-            dates.forEach { date ->
-                val day = DateUtils.parseDateOnly(date)?.let { DateUtils.weekdayOf(it) } ?: 0
+            cells.forEach { cell ->
                 val dayCourses = courses.filter {
-                    it.matchesWeekday(day) && it.matchesWeek(week, date)
+                    it.matchesWeekday(cell.weekday) && it.matchesWeek(cell.effectiveWeek, cell.effectiveDate)
                 }.sortedBy { it.startTime }
                 Box(Modifier.weight(1f).fillMaxHeight()) {
                     // 小时分隔线
@@ -381,13 +532,20 @@ private fun ThreeDaySchedule(
     }
 }
 
+/** 某日若配置了调休，返回其借用的日期；否则返回原日期。 */
+private fun holidaySourceDate(date: String, adjustments: List<HolidayAdjustment>): String =
+    adjustments.firstOrNull { it.date == date }?.sourceDate?.takeIf { it.isNotBlank() } ?: date
+
+/** 取 "MM-dd" 简写；长度不足时原样返回，避免异常数据导致越界。 */
+private fun shortDate(date: String): String = if (date.length >= 10) date.substring(5) else date
+
 private val TimelineStartHour = 7
 private val TimelineEndHour = 22
 
 @Composable
 private fun TimelineBlock(course: CourseEntity, periodTimings: List<PeriodTiming>, hourHeight: androidx.compose.ui.unit.Dp, onClick: () -> Unit) {
     val color = remember(course.colorTag) { parseHexColor(course.colorTag) }
-    val pt = periodTimings.resolvePeriod(course.startTime)
+    val pt = periodTimings.resolveBySection(course.periodSection)
     val startTime = pt?.startTime ?: course.startTime
     val endTime = pt?.endTime ?: course.endTime
     fun toMinutes(value: String): Int = DateUtils.timeToMinutes(value)

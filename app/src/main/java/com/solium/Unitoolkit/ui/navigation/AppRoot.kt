@@ -62,6 +62,8 @@ object Routes {
     const val PROFILE_EDIT = "profile_edit"
     const val COURSE_PRESETS = "course_presets"
     const val COURSE_PERIODS = "course_periods"
+    const val HOLIDAY_ADJUST = "holiday_adjust"
+    const val VAULT = "vault"
     const val THEMES = "themes"
 
     fun courseEdit(id: Long) = "course_edit/$id"
@@ -230,6 +232,8 @@ fun AppRoot(
             composable(Routes.PROFILE_EDIT) { com.solium.Unitoolkit.ui.profile.ProfileCardEditScreen(navController) }
             composable(Routes.COURSE_PRESETS) { com.solium.Unitoolkit.ui.course.CoursePresetScreen(navController) }
             composable(Routes.COURSE_PERIODS) { com.solium.Unitoolkit.ui.course.CoursePeriodScreen(navController) }
+            composable(Routes.HOLIDAY_ADJUST) { com.solium.Unitoolkit.ui.course.HolidayAdjustScreen(navController) }
+            composable(Routes.VAULT) { com.solium.Unitoolkit.ui.life.VaultScreen(navController) }
             composable(Routes.THEMES) { com.solium.Unitoolkit.ui.settings.ThemeManagerScreen(navController) }
 
             composable(Routes.SHOPPING) { com.solium.Unitoolkit.ui.shopping.ShoppingScreen(navController) }

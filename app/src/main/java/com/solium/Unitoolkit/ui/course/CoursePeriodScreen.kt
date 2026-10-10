@@ -68,7 +68,7 @@ fun CoursePeriodScreen(navController: NavController, vm: CourseViewModel = viewM
     ) { padding ->
         Column(Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 8.dp)) {
             Text(
-                "用于定义“第几节课”的起止时间，与“课表预设”相互独立。课程的开始时间命中某节次时，课表会按此时间展示；未命中的课程仍用自身时间。",
+                "用于定义“第几节课”的起止时间，与“课表预设”相互独立。课程需在编辑页显式选择某节次（或绑定节次）后才会按此时间展示；未绑定的课程始终使用自身时间，不会被强制套用。",
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(vertical = 6.dp),

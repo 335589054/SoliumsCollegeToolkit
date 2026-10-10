@@ -5,10 +5,12 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.solium.Unitoolkit.core.model.GpaFormula
 import com.solium.Unitoolkit.core.model.CoursePreset
+import com.solium.Unitoolkit.core.model.HolidayAdjustment
 import com.solium.Unitoolkit.core.model.PeriodTiming
 import com.solium.Unitoolkit.core.model.CustomTheme
 import com.solium.Unitoolkit.core.model.OverlayConfig
@@ -50,7 +52,15 @@ class SettingsRepository(private val context: Context) {
         val KEY_OVERLAY_CONFIG = stringPreferencesKey("overlay_config")
         val KEY_COURSE_PRESETS = stringPreferencesKey("course_presets")
         val KEY_PERIOD_TIMINGS = stringPreferencesKey("course_period_timings")
+        val KEY_HOLIDAY_ADJUSTMENTS = stringPreferencesKey("holiday_adjustments")
         val KEY_CUSTOM_THEMES = stringPreferencesKey("custom_themes")
+        // 账号密码本：仅保存密文与派生参数，不保存明文 PIN
+        val KEY_VAULT_SALT = stringPreferencesKey("vault_salt")
+        val KEY_VAULT_ITERATIONS = intPreferencesKey("vault_iterations")
+        val KEY_VAULT_VERIFIER = stringPreferencesKey("vault_verifier")
+        val KEY_VAULT_BLOB = stringPreferencesKey("vault_blob")
+        val KEY_VAULT_FAIL_COUNT = intPreferencesKey("vault_fail_count")
+        val KEY_VAULT_FAIL_SINCE = longPreferencesKey("vault_fail_since")
     }
 
     /** 首页卡片类型与默认顺序 */
@@ -128,6 +138,17 @@ class SettingsRepository(private val context: Context) {
         } ?: emptyList()
     }
     val themeId: Flow<String> = store.data.map { it[KEY_THEME] ?: ThemeKey.INK.key }
+    val holidayAdjustments: Flow<List<HolidayAdjustment>> = store.data.map {
+        it[KEY_HOLIDAY_ADJUSTMENTS]?.let { s ->
+            runCatching { json.decodeFromString(ListSerializer(HolidayAdjustment.serializer()), s) }.getOrNull()
+        } ?: emptyList()
+    }
+    val vaultSalt: Flow<String> = store.data.map { it[KEY_VAULT_SALT] ?: "" }
+    val vaultIterations: Flow<Int> = store.data.map { it[KEY_VAULT_ITERATIONS] ?: 0 }
+    val vaultVerifier: Flow<String> = store.data.map { it[KEY_VAULT_VERIFIER] ?: "" }
+    val vaultBlob: Flow<String> = store.data.map { it[KEY_VAULT_BLOB] ?: "" }
+    val vaultFailCount: Flow<Int> = store.data.map { it[KEY_VAULT_FAIL_COUNT] ?: 0 }
+    val vaultFailSince: Flow<Long> = store.data.map { it[KEY_VAULT_FAIL_SINCE] ?: 0L }
     val customThemes: Flow<List<CustomTheme>> = store.data.map {
         it[KEY_CUSTOM_THEMES]?.let { s ->
             runCatching { json.decodeFromString(ListSerializer(CustomTheme.serializer()), s) }.getOrNull()
@@ -165,4 +186,33 @@ class SettingsRepository(private val context: Context) {
         store.edit { it[KEY_COURSE_PRESETS] = json.encodeToString(ListSerializer(CoursePreset.serializer()), list) }
     suspend fun setPeriodTimings(list: List<PeriodTiming>) =
         store.edit { it[KEY_PERIOD_TIMINGS] = json.encodeToString(ListSerializer(PeriodTiming.serializer()), list) }
+    suspend fun setHolidayAdjustments(list: List<HolidayAdjustment>) =
+        store.edit { it[KEY_HOLIDAY_ADJUSTMENTS] = json.encodeToString(ListSerializer(HolidayAdjustment.serializer()), list) }
+
+    /** 写入密码本加密参数与密文（PIN 本身从不落盘）。 */
+    suspend fun setVault(salt: String, iterations: Int, verifier: String, blob: String) = store.edit {
+        it[KEY_VAULT_SALT] = salt
+        it[KEY_VAULT_ITERATIONS] = iterations
+        it[KEY_VAULT_VERIFIER] = verifier
+        it[KEY_VAULT_BLOB] = blob
+        it[KEY_VAULT_FAIL_COUNT] = 0
+        it[KEY_VAULT_FAIL_SINCE] = 0L
+    }
+
+    /** 仅更新密文（不改动派生参数）。 */
+    suspend fun setVaultBlob(blob: String) = store.edit { it[KEY_VAULT_BLOB] = blob }
+
+    suspend fun setVaultFailState(count: Int, since: Long) = store.edit {
+        it[KEY_VAULT_FAIL_COUNT] = count
+        it[KEY_VAULT_FAIL_SINCE] = since
+    }
+
+    suspend fun clearVault() = store.edit {
+        it.remove(KEY_VAULT_SALT)
+        it.remove(KEY_VAULT_ITERATIONS)
+        it.remove(KEY_VAULT_VERIFIER)
+        it.remove(KEY_VAULT_BLOB)
+        it.remove(KEY_VAULT_FAIL_COUNT)
+        it.remove(KEY_VAULT_FAIL_SINCE)
+    }
 }
